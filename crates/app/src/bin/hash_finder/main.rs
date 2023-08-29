@@ -1,8 +1,8 @@
 use clap::Parser;
 use hash_finder::cli::CliHashFinder;
-use std::sync::mpsc;
 use internal::hashing::funcs::generate_and_send_hashes;
 use internal::hashing::types::OpenSSLHasher;
+use std::sync::mpsc;
 
 fn main() {
     // Create CLI.

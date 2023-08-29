@@ -19,7 +19,7 @@ impl HashEndsWithNZeros<u128, String> for SHA256Hasher {
             .filter(|h| enough_zeros_at_end(h, zeros))
             .map(|hash| NumberHash { number, hash })
     }
-    
+
     fn hash_this(bytes: &[u8]) -> String {
         sha256::digest(bytes)
     }
@@ -35,16 +35,17 @@ impl HashEndsWithNZeros<u128, String> for OpenSSLHasher {
             .filter(|h| enough_zeros_at_end(h, zeros))
             .map(|hash| NumberHash { number, hash })
     }
-    
+
     fn hash_this(bytes: &[u8]) -> String {
         let mut hasher = openssl::sha::Sha256::new();
         hasher.update(bytes);
         let res = hasher.finish();
-        
+
         hex::encode(res)
     }
 }
 
+/// Implements `HashEndsWithNZeros` using `ring` crate.
 pub struct RingHasher;
 
 impl HashEndsWithNZeros<u128, String> for RingHasher {
@@ -54,11 +55,11 @@ impl HashEndsWithNZeros<u128, String> for RingHasher {
             .filter(|h| enough_zeros_at_end(h, zeros))
             .map(|hash| NumberHash { number, hash })
     }
-    
+
     fn hash_this(bytes: &[u8]) -> String {
         let hash = ring::digest::digest(&ring::digest::SHA256, bytes);
         let res = hash.as_ref();
-        
+
         hex::encode(res)
     }
 }
@@ -89,30 +90,30 @@ mod tests {
 
         assert_eq!(sha256_version, openssl_version);
     }
-    
+
     #[test]
     fn bench_openssl_vs_ring_hashers() {
         let times = 1_000_000;
         let data = 85070591730234615865843651857942510189_u128;
         let zeros = 7;
-        
+
         let execute = || RingHasher::matches(data, zeros);
         let ring_version = pocket_micro_benching::bench_times(times, execute).unwrap();
-        
+
         let execute = || OpenSSLHasher::matches(data, zeros);
         let openssl_version = pocket_micro_benching::bench_times(times, execute).unwrap();
-        
+
         assert_eq!(ring_version, openssl_version);
     }
-    
+
     #[test]
     fn test_hashers_coherence() {
         let n = 8754890562_u128;
-        
+
         let sha256 = SHA256Hasher::hash_this(n.to_string().as_bytes());
         let openssl = OpenSSLHasher::hash_this(n.to_string().as_bytes());
         let ring = RingHasher::hash_this(n.to_string().as_bytes());
-        
+
         assert_eq!(sha256, openssl);
         assert_eq!(openssl, ring);
         assert_eq!(sha256, ring);
@@ -152,18 +153,18 @@ mod tests {
 
         assert_eq!(native_conversion, string_conversion);
     }
-    
+
     #[test]
     fn big_vs_little_endianness() {
         let times = 1_000_000;
         let n = 7621340988765_u128;
-        
+
         let exec = || hash_num(&n.to_be_bytes());
         let big_endian = pocket_micro_benching::bench_times(times, exec).unwrap();
-        
+
         let exec = || hash_num(&n.to_le_bytes());
         let little_endian = pocket_micro_benching::bench_times(times, exec).unwrap();
-        
+
         assert_eq!(big_endian, little_endian);
     }
 }
