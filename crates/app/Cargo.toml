@@ -1,0 +1,19 @@
+[package]
+name = "hash_finder"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "hash_finder"
+
+[dependencies]
+#[:: Local ::]
+internal = { path = "../internal" }
+
+#[:: CLI ::]
+clap = { version = "4.3.21", features = ["derive"] }
+
+#[:: Errors ::]
+#color-eyre = "0.6.2"
