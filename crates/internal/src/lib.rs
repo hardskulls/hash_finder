@@ -10,5 +10,10 @@ impl<M, N> MapType<M, N> for M {
     }
 }
 
-pub mod hash_gen;
 pub mod logging;
+
+pub mod hashing {
+    pub mod funcs;
+    pub mod traits;
+    pub mod types;
+}
