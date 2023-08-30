@@ -1,7 +1,7 @@
 use clap::Parser;
 use hash_finder::cli::CliHashFinder;
 use internal::hashing::funcs::generate_and_send_hashes;
-use internal::hashing::types::OpenSSLHasher;
+use internal::hashing::types::RingHasher;
 use std::sync::mpsc;
 
 fn main() {
@@ -13,7 +13,7 @@ fn main() {
 
     let (sender, receiver) = mpsc::channel();
     // Search for hashes in background.
-    std::thread::spawn(move || generate_and_send_hashes::<OpenSSLHasher>(zeros, sender));
+    std::thread::spawn(move || generate_and_send_hashes::<RingHasher>(zeros, sender));
 
     let mut counter = results;
 
