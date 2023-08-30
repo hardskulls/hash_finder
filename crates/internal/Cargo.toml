@@ -22,3 +22,16 @@ log = "0.4.20"
 
 [dev-dependencies]
 pocket_micro_benching = { git = "https://github.com/hardskulls/pocket_micro_benching" }
+criterion = "0.5.1"
+
+[[bench]]
+name = "hashers"
+harness = false
+
+[[bench]]
+name = "enough_zeros_at_end"
+harness = false
+
+[[bench]]
+name = "num_vs_string_hashing"
+harness = false

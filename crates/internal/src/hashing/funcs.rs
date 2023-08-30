@@ -1,22 +1,22 @@
 use crate::hashing::traits::HashEndsWithNZeros;
-use crate::hashing::types::NumberHash;
+use crate::hashing::types::{Number, NumberHash};
 use crate::logging::PeekErr;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use std::sync::mpsc;
 
-pub type Sender = mpsc::Sender<NumberHash<u128, String>>;
+pub type Sender = mpsc::Sender<NumberHash<Number, String>>;
 
 /// Finds hashes with a specified number of zeroes at the end, and sends them through a channel.
 /// Uses `rayon` parallelization.
 pub fn generate_and_send_hashes<H>(trailing_zeros: usize, sender: Sender)
 where
-    H: HashEndsWithNZeros<u128, String>,
+    H: HashEndsWithNZeros<Number, String>,
 {
-    (1..=u128::MAX).into_par_iter().for_each(|number| {
+    (1..=Number::MAX).into_par_iter().for_each(|number| {
         if let Some(num_hash) = H::matches(number, trailing_zeros) {
             sender
                 .send(num_hash)
-                .peek_err(|err| log::error!("@[fn]:[generate_and_send_hashes]: {err:?}"))
+                .peek_err(|err| log::error!("@[fn]:[generate_and_send_hashes]: {err:#?}"))
                 .ok();
         }
     });
@@ -41,6 +41,8 @@ pub(super) fn enough_zeros_at_end(hash: &str, zeros: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pocket_micro_benching::bench_times;
+    use std::time::Duration;
 
     #[test]
     fn enough_zeros_test() {
@@ -78,5 +80,15 @@ mod tests {
         let zeros = 3;
         let res = enough_zeros_at_end(hash, zeros);
         assert!(res);
+    }
+
+    #[test]
+    fn bench_enough_zeros() {
+        let times = 1_000_000;
+        let s = "765965865380986542000000000";
+        let exec = || enough_zeros_at_end(s, 00000000);
+        let res = bench_times(times, exec).unwrap();
+
+        assert_eq!(res, Duration::from_millis(50));
     }
 }
