@@ -2,6 +2,13 @@
 name = "hash_finder"
 version = "0.1.0"
 edition = "2021"
+authors = ["Alexander Lebedev <hardskulls@rambler.ru>"]
+description = """
+hash_finder is a program that finds F results of natural number hashes with N zeroes at the end of the hash.
+Note that when N is 7 or greater, algorithm significantly slows down.
+"""
+homepage = "https://github.com/hardskulls/pocket_micro_benching"
+repository = "https://github.com/hardskulls/pocket_micro_benching"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
