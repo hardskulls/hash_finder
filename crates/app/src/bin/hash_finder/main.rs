@@ -5,6 +5,7 @@ use internal::hashing::types::RingHasher;
 use std::sync::mpsc;
 
 fn main() {
+    pretty_env_logger::init();
     // Create CLI.
     let cli = CliHashFinder::parse();
 
@@ -16,7 +17,6 @@ fn main() {
     std::thread::spawn(move || generate_and_send_hashes::<RingHasher>(zeros, sender));
 
     let mut counter = results;
-
     while let Ok(num_hash) = receiver.recv() {
         println!("{}, {}", num_hash.number, num_hash.hash);
 
