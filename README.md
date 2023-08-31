@@ -4,9 +4,10 @@
 `hash_finder` is a program that finds `F` results of natural number hashes 
 with `N` zeroes at the end of the hash.
 
-⚠️ Note that when `N` is 7 or greater, the algorithm significantly slows down.
+⚠️ Note that when `N` is 7 or greater, the algorithm slows down significantly.
 
 ## Usage
 Use `cargo run -r -- -F <RESULTS> -N <ZEROS>` to run the algorithm.  
 `cargo run -r` part is for running program in optimized mode (⚠️ this is important).  
-`--` here means "pass the following to the generated program".
+`--` here means "pass the following to the generated program".  
+Pass `-h` or `--help` after `--` to print help message (usage, version, etc.).

@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Alexander Lebedev <hardskulls@rambler.ru>"]
 description = """
 hash_finder is a program that finds F results of natural number hashes with N zeroes at the end of the hash.
-Note that when N is 7 or greater, algorithm significantly slows down.
+Note that when N is 7 or greater, the algorithm slows down significantly.
 """
 homepage = "https://github.com/hardskulls/pocket_micro_benching"
 repository = "https://github.com/hardskulls/pocket_micro_benching"
