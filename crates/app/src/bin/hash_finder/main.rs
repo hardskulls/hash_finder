@@ -1,8 +1,8 @@
 use clap::Parser;
 use hash_finder::cli::CliHashFinder;
-use internal::hashing::funcs::generate_and_send_hashes;
-use internal::hashing::types::RingHasher;
 use std::sync::mpsc;
+use internal::hashing::find_hashes;
+use internal::hashing::types::Number;
 
 fn main() {
     pretty_env_logger::init();
@@ -14,7 +14,7 @@ fn main() {
 
     let (sender, receiver) = mpsc::channel();
     // Search for hashes in background.
-    std::thread::spawn(move || generate_and_send_hashes::<RingHasher>(zeros, sender));
+    std::thread::spawn(move || find_hashes(1, Number::MAX, zeros, sender));
 
     let mut counter = results;
     while let Ok(num_hash) = receiver.recv() {

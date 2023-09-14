@@ -20,10 +20,11 @@ name = "hash_finder"
 internal = { path = "../internal" }
 
 #[:: CLI ::]
-clap = { version = "4.3.21", features = ["derive"] }
+clap = { version = "4.4.3", features = ["derive"] }
 
 #[:: Errors ::]
 #color-eyre = "0.6.2"
 
 #[:: Logging ::]
 pretty_env_logger = "0.5.0"
+log = "0.4.20"

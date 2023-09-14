@@ -1,19 +1,14 @@
-/// Analogous to `map()` method, but works on any type, not just `Option`.
-/// Convenient for chained method calls.
-pub trait MapType<M, N> {
-    fn map_type(self, f: impl FnOnce(M) -> N) -> N;
-}
-
-impl<M, N> MapType<M, N> for M {
-    fn map_type(self, f: impl FnOnce(M) -> N) -> N {
-        f(self)
-    }
-}
-
 pub mod logging;
 
+pub mod utils;
+
 pub mod hashing {
-    pub mod funcs;
-    pub mod traits;
+    pub use funcs::{find_hashes, gen_range_of_nums};
+    pub use traits::HashEndsWithNZeros;
+
+    pub mod hashers;
     pub mod types;
+
+    mod funcs;
+    mod traits;
 }

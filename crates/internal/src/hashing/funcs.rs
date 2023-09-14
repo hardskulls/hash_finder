@@ -1,34 +1,47 @@
-use crate::hashing::traits::HashEndsWithNZeros;
-use crate::hashing::types::{Number, NumberHash};
+use crate::hashing::HashEndsWithNZeros;
+use rayon::prelude::{IntoParallelIterator, ParallelIterator};
+
+use crate::hashing::hashers::RingHasher;
+use crate::hashing::types::{Number, NumberHash, Sender};
 use crate::logging::PeekErr;
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
-use std::sync::mpsc;
 
-pub type Sender = mpsc::Sender<NumberHash<Number, String>>;
+/// Finds hashes containing enough zeros at the end and sends them through channel.
+pub fn find_hashes(start: Number, end: Number, with_zeros_at_end: usize, sender: Sender) {
+    let filter = |n| RingHasher::matches(n, with_zeros_at_end);
+    let apply = |num_and_hash| {
+        sender
+            .send(num_and_hash)
+            .peek_err(|e| log::error!("error: {e}"))
+    };
+    gen_range_of_nums(start, end, filter, apply);
+}
 
-/// Finds hashes with a specified number of zeroes at the end, and sends them through a channel.
-/// Uses `rayon` parallelization.
-pub fn generate_and_send_hashes<H>(trailing_zeros: usize, sender: Sender)
+type T<OUT> = NumberHash<Number, OUT>;
+
+/// Generates range of numbers, filters each one and applies provided
+/// function to those, which pass through the filter.  
+/// Does not return anything, as it is intended to be used with things like channels.  
+///
+/// * Uses `rayon` for parallelization.
+pub fn gen_range_of_nums<OUTPUT, F, A, RES>(start: Number, end: Number, filter: F, apply: A)
 where
-    H: HashEndsWithNZeros<Number, String>,
+    F: Fn(Number) -> Option<T<OUTPUT>> + Sync + Send,
+    A: Fn(T<OUTPUT>) -> RES + Sync + Send,
 {
-    (1..=Number::MAX).into_par_iter().for_each(|number| {
-        if let Some(num_hash) = H::matches(number, trailing_zeros) {
-            sender
-                .send(num_hash)
-                .peek_err(|err| log::error!("@[fn]:[generate_and_send_hashes]: {err:#?}"))
-                .ok();
+    (start..=end).into_par_iter().for_each(|number| {
+        if let Some(num_hash) = filter(number) {
+            apply(num_hash);
         }
-    });
+    })
 }
 
 /// If there is enough zeroes at the end of a hash returns `true`.
-pub(super) fn enough_zeros_at_end(hash: &str, zeros: usize) -> bool {
+pub(in crate::hashing) fn enough_zeros_at_end(hash: &str, zeros: usize) -> bool {
     let mut idx = hash.len() - 1;
     let mut zeros_left = zeros;
 
     while zeros_left > 0 {
-        if !matches!(hash.get(idx..idx + 1), Some("0")) {
+        if !matches!(hash.get(idx..=idx), Some("0")) {
             return false;
         }
         idx -= 1;
@@ -37,12 +50,13 @@ pub(super) fn enough_zeros_at_end(hash: &str, zeros: usize) -> bool {
 
     true
 }
-
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use pocket_micro_benching::bench_times;
     use std::time::Duration;
+
+    use pocket_micro_benching::bench_times;
+
+    use super::*;
 
     #[test]
     fn enough_zeros_test() {

@@ -3,8 +3,8 @@
 use criterion::BenchmarkId;
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use internal::hashing::traits::HashEndsWithNZeros;
-use internal::hashing::types::{OpenSSLHasher, RingHasher, SHA256Hasher};
+use internal::hashing::HashEndsWithNZeros;
+use internal::hashing::hashers::{OpenSSLHasher, RingHasher, SHA256Hasher};
 
 fn bench_hashers(c: &mut Criterion) {
     let mut group = c.benchmark_group("[:: SHA-256 Hashing Implementations ::]");
