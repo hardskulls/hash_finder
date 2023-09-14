@@ -1,6 +1,9 @@
-use clap::Parser;
-use hash_finder::cli::CliHashFinder;
 use std::sync::mpsc;
+
+use clap::Parser;
+
+use hash_finder::cli::CliHashFinder;
+use hash_finder::formatting::print_num_and_hash;
 use internal::hashing::find_hashes;
 use internal::hashing::types::Number;
 
@@ -18,7 +21,7 @@ fn main() {
 
     let mut counter = results;
     while let Ok(num_hash) = receiver.recv() {
-        println!("{}, {}", num_hash.number, num_hash.hash);
+        print_num_and_hash(num_hash);
 
         counter -= 1;
         if counter == 0 {

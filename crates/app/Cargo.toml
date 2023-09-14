@@ -28,3 +28,6 @@ clap = { version = "4.4.3", features = ["derive"] }
 #[:: Logging ::]
 pretty_env_logger = "0.5.0"
 log = "0.4.20"
+
+#[:: Terminal Output ::]
+colored = "2.0.4"
