@@ -1,68 +1,22 @@
-use crate::hashing::funcs::enough_zeros_at_end;
-use crate::hashing::traits::HashEndsWithNZeros;
-use crate::hashing::types::{Number, NumberHash};
-use crate::utils::MapType;
+pub use ring_hasher::RingHasher;
+mod ring_hasher;
 
-/// Implements `HashEndsWithNZeros` using `sha256` crate.
-pub struct SHA256Hasher;
+#[cfg(feature = "sha256_hasher")]
+pub use sha256_hasher::SHA256Hasher;
+#[cfg(feature = "sha256_hasher")]
+mod sha256_hasher;
 
-impl HashEndsWithNZeros<Number, String> for SHA256Hasher {
-    fn matches(number: Number, zeros: usize) -> Option<NumberHash<Number, String>> {
-        Self::hash_this(&number.to_ne_bytes())
-            .map_type(Some)
-            .filter(|h| enough_zeros_at_end(h, zeros))
-            .map(|hash| NumberHash { number, hash })
-    }
+#[cfg(feature = "openssl_hasher")]
+pub use openssl_hasher::OpenSSLHasher;
+#[cfg(feature = "openssl_hasher")]
+mod openssl_hasher;
 
-    fn hash_this(bytes: &[u8]) -> String {
-        sha256::digest(bytes)
-    }
-}
-
-/// Implements `HashEndsWithNZeros` using `openssl` crate.
-pub struct OpenSSLHasher;
-
-impl HashEndsWithNZeros<Number, String> for OpenSSLHasher {
-    fn matches(number: Number, zeros: usize) -> Option<NumberHash<Number, String>> {
-        Self::hash_this(&number.to_ne_bytes())
-            .map_type(Some)
-            .filter(|h| enough_zeros_at_end(h, zeros))
-            .map(|hash| NumberHash { number, hash })
-    }
-
-    fn hash_this(bytes: &[u8]) -> String {
-        let mut hasher = openssl::sha::Sha256::new();
-        hasher.update(bytes);
-        let res = hasher.finish();
-
-        hex::encode(res)
-    }
-}
-
-/// Implements `HashEndsWithNZeros` using `ring` crate.
-pub struct RingHasher;
-
-impl HashEndsWithNZeros<Number, String> for RingHasher {
-    fn matches(number: Number, zeros: usize) -> Option<NumberHash<Number, String>> {
-        Self::hash_this(&number.to_ne_bytes())
-            .map_type(Some)
-            .filter(|h| enough_zeros_at_end(h, zeros))
-            .map(|hash| NumberHash { number, hash })
-    }
-
-    fn hash_this(bytes: &[u8]) -> String {
-        let hash = ring::digest::digest(&ring::digest::SHA256, bytes);
-        let res = hash.as_ref();
-
-        hex::encode(res)
-    }
-}
-
+#[cfg(all(sha256_hasher, openssl_hasher))]
 #[cfg(test)]
 mod tests {
-    use crate::utils::MapType;
-
     use super::*;
+    use crate::hashing::traits::HashEndsWithNZeros;
+    use crate::utils::MapType;
 
     #[test]
     fn test_hashers_coherence() {
@@ -97,18 +51,18 @@ mod tests {
 /// Testing module used for micro-benchmarking.
 #[cfg(test)]
 mod benches {
-    use super::*;
-
-    fn hash_num(n: &[u8]) -> String {
-        let mut hash = openssl::sha::Sha256::new();
-        hash.update(n);
-        let res = hash.finish();
+    fn hash_num(bytes: &[u8]) -> String {
+        let hash = ring::digest::digest(&ring::digest::SHA256, bytes);
+        let res = hash.as_ref();
 
         hex::encode(res)
     }
 
+    #[cfg(all(sha256_hasher, openssl_hasher))]
     #[test]
     fn bench_sha256_vs_openssl_hashers() {
+        use crate::hashing::traits::HashEndsWithNZeros;
+
         let times = 1_000_000;
         let data = 647562409;
         let zeros = 7;
@@ -122,8 +76,11 @@ mod benches {
         assert_eq!(sha256_version, openssl_version);
     }
 
+    #[cfg(openssl_hasher)]
     #[test]
     fn bench_openssl_vs_ring_hashers() {
+        use crate::hashing::traits::HashEndsWithNZeros;
+
         let times = 1_000_000;
         let data = 647562409;
         let zeros = 7;

@@ -4,10 +4,9 @@ use criterion::BenchmarkId;
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-fn hash_num(n: &[u8]) -> String {
-    let mut hash = openssl::sha::Sha256::new();
-    hash.update(n);
-    let res = hash.finish();
+fn hash_num(bytes: &[u8]) -> String {
+    let hash = ring::digest::digest(&ring::digest::SHA256, bytes);
+    let res = hash.as_ref();
 
     hex::encode(res)
 }
