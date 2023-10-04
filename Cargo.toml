@@ -1,13 +1,59 @@
-[workspace]
-members = ["crates/*"]
-#exclude = ["crates/local"]
-#default-members = ["crates/internal"]
-resolver = "2"
+[package]
+name = "hash_finder"
+version = "0.1.0"
+edition = "2021"
+authors = ["Alexander Lebedev <hardskulls@rambler.ru>"]
+description = """
+internal code of hash_finder containing most of the logic.
+"""
+homepage = "https://github.com/hardskulls/pocket_micro_benching"
+repository = "https://github.com/hardskulls/pocket_micro_benching"
 
-[profile.release]
-codegen-units = 1
-lto = true
-#strip = true
-#panic = "abort"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-#[workspace.dependencies]
+[features]
+openssl_hasher = ["dep:openssl"]
+sha256_hasher = ["dep:sha256"]
+
+[[bin]]
+name = "hash_finder_cli"
+path = "src/presentation/bins/cli.rs"
+
+[dependencies]
+#[:: Hashing ::]
+#ring = "0.16.20"
+sha256 = { version = "1.4.0", features = ["native_openssl"], optional = true }
+#sha2 = "0.10.7"
+hex = { version = "0.4.3", features = ["default"] }
+openssl = { version = "0.10.57", features = ["default"], optional = true }
+ring = { version = "0.16.20", features = ["default"] }
+
+#[:: Parallelization ::]
+rayon = "1.8.0"
+
+#[:: Logging ::]
+pretty_env_logger = "0.5.0"
+log = "0.4.20"
+
+#[:: Numbers ::]
+num-traits = "0.2.16"
+
+#[:: CLI ::]
+clap = { version = "4.4.6", features = ["derive"] }
+colored = "2.0.4"
+
+[dev-dependencies]
+pocket_micro_benching = { git = "https://github.com/hardskulls/pocket_micro_benching" }
+criterion = "0.5.1"
+
+[[bench]]
+name = "hashers"
+harness = false
+
+[[bench]]
+name = "enough_zeros_at_end"
+harness = false
+
+[[bench]]
+name = "num_vs_string_hashing"
+harness = false

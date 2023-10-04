@@ -1,11 +1,10 @@
 use std::sync::mpsc;
 
 use clap::Parser;
-
-use hash_finder::cli::CliHashFinder;
-use hash_finder::formatting::print_num_and_hash;
-use internal::hashing::find_hashes;
-use internal::hashing::types::Number;
+use hash_finder::application::find_hashes::find_hashes;
+use hash_finder::domain::hashing::objects::common_types::Number;
+use hash_finder::presentation::apps::cli::formatting::format_num_and_hash;
+use hash_finder::presentation::apps::cli::layout::CliHashFinder;
 
 fn main() {
     pretty_env_logger::init();
@@ -21,7 +20,9 @@ fn main() {
 
     let mut counter = results;
     while let Ok(num_hash) = receiver.recv() {
-        print_num_and_hash(num_hash);
+        let output = format_num_and_hash(num_hash);
+
+        println!("{output}");
 
         counter -= 1;
         if counter == 0 {

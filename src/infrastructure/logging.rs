@@ -3,7 +3,7 @@
 ///
 /// # Example
 /// ```
-/// use internal::logging::PeekErr;
+/// use hash_finder::infrastructure::logging::PeekErr;
 ///
 /// let num = "nothing".parse::<u16>().peek_err(|e| log::error!("error: {e:?}"));
 /// ```
