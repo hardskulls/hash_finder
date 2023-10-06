@@ -1,16 +1,16 @@
-use crate::domain::hashing::abstractions::hasher::HashEndsWithNZeros;
-use crate::domain::hashing::gen_range::gen_range_of_nums;
-use crate::domain::hashing::objects::common_types::{Number, Sender};
-use crate::domain::hashing::objects::hashers::RingHasher;
-use crate::infrastructure::logging::PeekErr;
+use crate::domain::hashing::abstractions::gen_range::{AbstractNumber, GenRange};
+use crate::domain::hashing::abstractions::hasher::{HashEndsWithNZeros, RingHasher};
+use crate::domain::hashing::value_objects::numbers::{Number, NumberHash};
 
 /// Finds hashes containing enough zeros at the end and sends them through channel.
-pub fn find_hashes(start: Number, end: Number, with_zeros_at_end: usize, sender: Sender<Number>) {
-    let filter = |n| RingHasher::matches(n, with_zeros_at_end);
-    let apply = |num_and_hash| {
-        sender
-            .send(num_and_hash)
-            .peek_err(|e| log::error!("error: {e}"))
+pub fn find_hashes<F>(start: Number, end: Number, with_zeros_at_end: usize, f: F)
+where
+    F: Fn(NumberHash<Number, String>) + Send + Sync,
+{
+    let f = |number| {
+        if let Some(num_hash) = RingHasher::matches(number, with_zeros_at_end) {
+            f(num_hash);
+        }
     };
-    gen_range_of_nums(start, end, filter, apply);
+    AbstractNumber::gen_range(start, end, f);
 }

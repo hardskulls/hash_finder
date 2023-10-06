@@ -37,6 +37,7 @@ log = "0.4.20"
 
 #[:: Numbers ::]
 num-traits = "0.2.16"
+num-iter = "0.1.43"
 
 #[:: CLI ::]
 clap = { version = "4.4.6", features = ["derive"] }
@@ -57,3 +58,4 @@ harness = false
 [[bench]]
 name = "num_vs_string_hashing"
 harness = false
+

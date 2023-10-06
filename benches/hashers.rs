@@ -5,10 +5,10 @@ use criterion::BenchmarkId;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use hash_finder::domain::hashing::abstractions::hasher::HashEndsWithNZeros;
 #[cfg(feature = "openssl_hasher")]
-use hash_finder::domain::hashing::objects::hashers::OpenSSLHasher;
-use hash_finder::domain::hashing::objects::hashers::RingHasher;
+use hash_finder::domain::hashing::abstractions::hasher::OpenSSLHasher;
+use hash_finder::domain::hashing::abstractions::hasher::RingHasher;
 #[cfg(feature = "sha256_hasher")]
-use hash_finder::domain::hashing::objects::hashers::SHA256Hasher;
+use hash_finder::domain::hashing::abstractions::hasher::SHA256Hasher;
 
 fn bench_hashers(c: &mut Criterion) {
     let mut group = c.benchmark_group("[:: SHA-256 Hashing Implementations ::]");

@@ -1,6 +1,5 @@
-use crate::domain::hashing::abstractions::hasher::HashEndsWithNZeros;
-use crate::domain::hashing::objects::common_types::NumberHash;
-use crate::domain::hashing::objects::hashers::enough_zeros_at_end;
+use crate::domain::hashing::abstractions::hasher::{enough_zeros_at_end, HashEndsWithNZeros};
+use crate::domain::hashing::value_objects::numbers::NumberHash;
 use crate::utils::MapType;
 use num_traits::{Num, ToBytes};
 

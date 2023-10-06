@@ -1,9 +1,8 @@
 use std::sync::mpsc;
 
 use clap::Parser;
-use hash_finder::application::find_hashes::find_hashes;
-use hash_finder::domain::hashing::objects::common_types::Number;
 use hash_finder::presentation::apps::cli::formatting::format_num_and_hash;
+use hash_finder::presentation::apps::cli::functionality::search_for_hasher_in_bg;
 use hash_finder::presentation::apps::cli::layout::CliHashFinder;
 
 fn main() {
@@ -11,12 +10,10 @@ fn main() {
     // Create CLI.
     let cli = CliHashFinder::parse();
 
-    let zeros = cli.expect_zeroes_at_hash_end;
-    let results = cli.amount_of_results;
+    let (zeros, results) = (cli.expect_zeroes_at_hash_end, cli.amount_of_results);
 
     let (sender, receiver) = mpsc::channel();
-    // Search for hashes in background.
-    std::thread::spawn(move || find_hashes(1, Number::MAX, zeros, sender));
+    search_for_hasher_in_bg(zeros, sender);
 
     let mut counter = results;
     while let Ok(num_hash) = receiver.recv() {

@@ -2,9 +2,13 @@ pub mod utils;
 
 pub mod domain {
     pub mod hashing {
-        pub mod abstractions;
-        pub mod gen_range;
-        pub mod objects;
+        pub mod abstractions {
+            pub mod gen_range;
+            pub mod hasher;
+        }
+        pub mod value_objects {
+            pub mod numbers;
+        }
     }
 }
 
