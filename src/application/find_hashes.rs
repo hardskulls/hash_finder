@@ -1,4 +1,4 @@
-use crate::domain::hashing::abstractions::gen_range::{AbstractNumber, GenRange};
+use crate::domain::hashing::abstractions::gen_range::{GenRange, SingleNumAlias};
 use crate::domain::hashing::abstractions::hasher::{HashEndsWithNZeros, RingHasher};
 use crate::domain::hashing::value_objects::numbers::{Number, NumberHash};
 
@@ -12,5 +12,5 @@ where
             f(num_hash);
         }
     };
-    AbstractNumber::gen_range(start, end, f);
+    SingleNumAlias::gen_range(start, end, f);
 }

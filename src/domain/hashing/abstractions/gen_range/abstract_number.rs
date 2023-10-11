@@ -7,16 +7,18 @@ use std::ops::{Add, RangeInclusive};
 ///
 /// * Uses `num_traits` for number.
 /// * Uses `rayon` for parallelization.
+#[deprecated = "Has serious performance issues, so marked as deprecated for now."]
 pub struct AbstractNumber;
 
 fn splitter<N>(data: RangeInclusive<N>) -> (RangeInclusive<N>, Option<RangeInclusive<N>>)
 where
-    N: Num + Copy,
+    N: Num + PartialOrd + Copy,
 {
     let (start, end) = (*data.start(), *data.end());
     let middle = end.div(N::one() + N::one());
     let next = middle + N::one();
-    (start..=middle, Some(next..=end))
+    let opt_left = if next > end { None } else { Some(next..=end) };
+    (start..=middle, opt_left)
 }
 
 impl<N, T, F> GenRange<N, T, F> for AbstractNumber
