@@ -17,7 +17,7 @@ sha256_hasher = ["dep:sha256"]
 
 [[bin]]
 name = "hash_finder_cli"
-path = "src/presentation/bins/cli.rs"
+path = "src/view/bins/cli.rs"
 
 [dependencies]
 #[:: Hashing ::]
@@ -57,5 +57,9 @@ harness = false
 
 [[bench]]
 name = "num_vs_string_hashing"
+harness = false
+
+[[bench]]
+name = "range_generators"
 harness = false
 

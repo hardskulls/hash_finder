@@ -1,6 +1,6 @@
-use crate::application::find_hashes::find_hashes;
-use crate::domain::hashing::value_objects::numbers::{Number, NumberHash};
-use crate::infrastructure::logging::PeekErr;
+use crate::core::hashing::types::numbers::{Number, NumberHash};
+use crate::external::logging::PeekErr;
+use crate::usecases::find_hashes::find_hashes;
 use std::sync::mpsc;
 
 pub type Sender<N> = mpsc::Sender<NumberHash<N, String>>;

@@ -1,13 +1,13 @@
-use crate::domain::hashing::abstractions::hasher::{enough_zeros_at_end, HashEndsWithNZeros};
-use crate::domain::hashing::value_objects::numbers::NumberHash;
+use crate::core::hashing::abstractions::hasher::{enough_zeros_at_end, HashEndsWithNZeros};
+use crate::core::hashing::types::numbers::NumberHash;
 use crate::utils::MapType;
 use num_traits::{Num, ToBytes};
 
 // [!!] Fully-qualified path have to be used to avoid error `E0282`.
-/// Implements `HashEndsWithNZeros` using `sha256` crate.
-pub struct SHA256Hasher;
+/// Implements `HashEndsWithNZeros` using `openssl` crate.
+pub struct OpenSSLHasher;
 
-impl<N> HashEndsWithNZeros<N, String> for SHA256Hasher
+impl<N> HashEndsWithNZeros<N, String> for OpenSSLHasher
 where
     N: Num + ToBytes,
 {
@@ -19,6 +19,10 @@ where
     }
 
     fn hash_this(bytes: &[u8]) -> String {
-        sha256::digest(bytes)
+        let mut hasher = openssl::sha::Sha256::new();
+        hasher.update(bytes);
+        let res = hasher.finish();
+
+        hex::encode(res)
     }
 }

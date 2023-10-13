@@ -1,6 +1,6 @@
-use crate::domain::hashing::abstractions::gen_range::{GenRange, SingleNumAlias};
-use crate::domain::hashing::abstractions::hasher::{HashEndsWithNZeros, RingHasher};
-use crate::domain::hashing::value_objects::numbers::{Number, NumberHash};
+use crate::core::hashing::abstractions::gen_range::{GenRange, SingleNumAlias};
+use crate::core::hashing::abstractions::hasher::{HashEndsWithNZeros, RingHasher};
+use crate::core::hashing::types::numbers::{Number, NumberHash};
 
 /// Finds hashes containing enough zeros at the end and sends them through channel.
 pub fn find_hashes<F>(start: Number, end: Number, with_zeros_at_end: usize, f: F)

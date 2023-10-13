@@ -1,27 +1,31 @@
 pub mod utils;
 
-pub mod domain {
+pub mod core {
     pub mod hashing {
         pub mod abstractions {
             pub mod gen_range;
             pub mod hasher;
         }
-        pub mod value_objects {
+        pub mod types {
             pub mod numbers;
         }
     }
 }
 
-pub mod application {
+pub mod usecases {
     pub mod find_hashes;
 }
 
-pub mod infrastructure {
+pub mod external {
     pub mod logging;
 }
 
-pub mod presentation {
+pub mod view {
     pub mod apps {
-        pub mod cli;
+        pub mod cli {
+            pub mod formatting;
+            pub mod functionality;
+            pub mod layout;
+        }
     }
 }

@@ -1,5 +1,5 @@
-use crate::domain::hashing::abstractions::gen_range::GenRange;
-use crate::domain::hashing::value_objects::numbers::Number;
+use crate::core::hashing::abstractions::gen_range::GenRange;
+use crate::core::hashing::types::numbers::Number;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 /// A `GenRange` implementor.

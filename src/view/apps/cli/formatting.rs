@@ -1,4 +1,4 @@
-use crate::domain::hashing::value_objects::numbers::NumberHash;
+use crate::core::hashing::types::numbers::NumberHash;
 use colored::Colorize;
 use num_traits::{Bounded, Num};
 use std::fmt::Display;

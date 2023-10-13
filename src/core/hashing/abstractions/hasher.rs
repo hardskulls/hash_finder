@@ -1,4 +1,4 @@
-use crate::domain::hashing::value_objects::numbers::NumberHash;
+use crate::core::hashing::types::numbers::NumberHash;
 
 pub use ring_hasher::RingHasher;
 mod ring_hasher;
@@ -39,6 +39,8 @@ fn enough_zeros_at_end(hash: &str, zeros: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(any(feature = "openssl_hasher", feature = "sha256_hasher"))]
+    use crate::core::hashing::abstractions::hasher::HashEndsWithNZeros;
 
     #[test]
     fn enough_zeros_test() {
@@ -81,8 +83,6 @@ mod tests {
     #[cfg(all(feature = "openssl_hasher", feature = "sha256_hasher"))]
     #[test]
     fn test_hashers_coherence() {
-        use crate::domain::hashing::abstractions::hasher::HashEndsWithNZeros;
-
         let n = 8754890562_u64;
 
         let sha256 =
@@ -100,11 +100,10 @@ mod tests {
     #[cfg(all(feature = "openssl_hasher", feature = "sha256_hasher"))]
     #[test]
     fn matches_comparison() {
-        use crate::domain::hashing::abstractions::hasher::HashEndsWithNZeros;
         use crate::utils::MapType;
 
         // [!!] Same number will have completely different hash if it's type is changed.
-        // [!!] This type should be u128.
+        // [!!] This type should be u128 (for test purposes).
         let n: u128 = 483338;
         let reference = "50345144129e5b7e68d1d0e3cd2bdb48dcd55f1bad03a1a34ccd0296a0000000"
             .to_string()

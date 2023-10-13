@@ -1,9 +1,9 @@
 use std::sync::mpsc;
 
 use clap::Parser;
-use hash_finder::presentation::apps::cli::formatting::format_num_and_hash;
-use hash_finder::presentation::apps::cli::functionality::search_for_hasher_in_bg;
-use hash_finder::presentation::apps::cli::layout::CliHashFinder;
+use hash_finder::view::apps::cli::formatting::format_num_and_hash;
+use hash_finder::view::apps::cli::functionality::search_for_hasher_in_bg;
+use hash_finder::view::apps::cli::layout::CliHashFinder;
 
 fn main() {
     pretty_env_logger::init();

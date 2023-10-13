@@ -1,4 +1,4 @@
-use crate::domain::hashing::abstractions::gen_range::GenRange;
+use crate::core::hashing::abstractions::gen_range::GenRange;
 use num_traits::{Num, ToPrimitive};
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use std::ops::{Add, RangeInclusive};
